@@ -1,6 +1,6 @@
 {
   "name": "gulp-markdownlint",
-  "version": "0.0.1-beta.2",
+  "version": "0.0.1-beta.3",
   "description": "the gulp plugin for markdownlint",
   "main": "dist/index.js",
   "scripts": {
