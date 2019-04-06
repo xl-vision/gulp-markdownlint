@@ -1,7 +1,7 @@
 # gulp-markdownlint
 
-[![Build Status](https://api.travis-ci.com/RhysXia/gulp-markdownlint.svg?branch=dev)](https://travis-ci.com/RhysXia/gulp-markdownlint)
-[![codecov](https://codecov.io/gh/RhysXia/gulp-markdownlint/branch/dev/graph/badge.svg)](https://codecov.io/gh/RhysXia/gulp-markdownlint)
+[![Build Status](https://api.travis-ci.com/RhysXia/gulp-markdownlint.svg?branch=master)](https://travis-ci.com/RhysXia/gulp-markdownlint)
+[![codecov](https://codecov.io/gh/RhysXia/gulp-markdownlint/branch/master/graph/badge.svg)](https://codecov.io/gh/RhysXia/gulp-markdownlint)
 [![Dependencies](https://img.shields.io/david/RhysXia/gulp-markdownlint.svg)](https://david-dm.org/RhysXia/gulp-markdownlint)
 [![DevDependencies](https://img.shields.io/david/dev/RhysXia/gulp-markdownlint.svg)](https://david-dm.org/RhysXia/gulp-markdownlint?type=dev)
 
