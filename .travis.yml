@@ -12,7 +12,7 @@ jobs:
     - stage: lint
       script: npm run lint
     - stage: build
-      script: npm run buid
+      script: npm run build
     - stage: test
       script: npm run test  -- --coverage && bash <(curl -s https://codecov.io/bash)
 stages:
