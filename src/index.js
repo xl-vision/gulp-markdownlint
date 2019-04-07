@@ -21,11 +21,11 @@ module.exports = function gulpMarkdownlint(options = {}) {
 
     const formatter = options.formatter || 'verbose'
 
-    const allowWarnings = options.allowWarnings || false
+    const failAfterError = options.failAfterError === undefined ? true : options.failAfterError
 
     delete options.configFile
     delete options.formatter
-    delete options.allowWarnings
+    delete options.failAfterError
     delete options.config
 
     const files = []
@@ -55,16 +55,13 @@ module.exports = function gulpMarkdownlint(options = {}) {
             if (err) {
                 this.emit('error', new PluginError(pluginName, err))
             } else {
-                const errorMessage = ret.toString(true)
-                if (errorMessage) {
-                    const message = formatResult(ret, formatter)
+                const allMessage = ret.toString(true)
 
-                    if (allowWarnings) {
-                        console.warn(message)
-                    } else {
-                        console.error(message)
-                    }
-                    this.emit('error', new PluginError(pluginName, errorMessage))
+                const message = formatResult(ret, formatter)
+                console.info(message)
+
+                if(failAfterError && allMessage) {
+                    this.emit('error', new PluginError(pluginName, allMessage))
                 }
 
             }
@@ -76,7 +73,23 @@ module.exports = function gulpMarkdownlint(options = {}) {
 }
 
 
+// 过滤掉没有错误的结果
+function filterResult(result){
+    const obj = {}
+    const files = Object.keys(result)
+    for (const file of files) {
+        const arr = result[file]
+        if(!arr || arr.length === 0){
+            continue
+        }
+        obj[file] = arr
+    }
+    return obj
+}
+
 function formatResult(result, formatter) {
+
+    result = filterResult(result)
 
     if (formatter === 'json') {
         return JSON.stringify(result)
@@ -86,9 +99,6 @@ function formatResult(result, formatter) {
         const messageArr = []
         for (const file of files) {
             const arr = result[file]
-            if (!arr && arr.length === 0) {
-                continue
-            }
             const tempArr = []
             for (const item of arr) {
                 const lineNumber = item['lineNumber']
