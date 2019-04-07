@@ -97,4 +97,26 @@ describe('test index', () => {
         })
 
     })
+
+    it('provide config object instead of config file', () => {
+        expect.assertions(1)
+        jest.spyOn(console, 'error')
+            .mockImplementation(message => {
+                expect(message.replace(/^.*\n/, '')).toMatchSnapshot()
+            })
+
+
+        return new Promise((resolved) => {
+            gulp.src(resolve('base.md'))
+                .pipe(gulpMarkdownlint({
+                    configFile: false,
+                    config: {
+                        MD022: {lines_above: 0, lines_below: 0}
+                    },
+                    allowWarnings: true
+                }))
+                .on('error', () => resolved())
+        })
+
+    })
 })

@@ -3,10 +3,21 @@ const through2 = require('through2')
 const MarkdownLint = require('markdownlint')
 const path = require('path')
 const pluginName = 'gulp-markdownlint'
+const fs = require('fs')
 
 module.exports = function gulpMarkdownlint(options = {}) {
 
     let configFile = options.configFile || 'markdownlint.json'
+
+    let config = options.config || {}
+
+    if(configFile && fs.existsSync(configFile)){
+        if (!path.isAbsolute(configFile)) {
+            configFile = path.join(process.cwd(), configFile)
+        }
+        const tempConfig = MarkdownLint.readConfigSync(configFile)
+        config = {...tempConfig, ...config}
+    }
 
     const formatter = options.formatter || 'verbose'
 
@@ -15,14 +26,7 @@ module.exports = function gulpMarkdownlint(options = {}) {
     delete options.configFile
     delete options.formatter
     delete options.allowWarnings
-
-
-    if (!path.isAbsolute(configFile)) {
-        configFile = path.join(process.cwd(), configFile)
-    }
-
-
-    let config = MarkdownLint.readConfigSync(configFile)
+    delete options.config
 
     const files = []
 
