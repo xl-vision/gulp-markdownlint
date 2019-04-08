@@ -5,11 +5,7 @@
         "node": true,
         "jest": true
     },
-    "extends": "eslint:recommended",
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
+    "extends": ["eslint:recommended", "standard"],
     "parserOptions": {
         "ecmaVersion": 2018
     },
