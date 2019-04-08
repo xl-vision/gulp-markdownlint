@@ -4,6 +4,7 @@ const MarkdownLint = require('markdownlint')
 const path = require('path')
 const pluginName = 'gulp-markdownlint'
 const fs = require('fs')
+const reporterFactory = require('./reporter-factory')
 
 module.exports = function gulpMarkdownlint (options = {}) {
   let configFile = options.configFile || 'markdownlint.json'
@@ -18,7 +19,13 @@ module.exports = function gulpMarkdownlint (options = {}) {
     config = { ...tempConfig, ...config }
   }
 
-  const formatter = options.formatter || 'verbose'
+  const reporters = options.reporters || [ { formatter: 'verbose', console: true } ]
+
+  if (!Array.isArray(reporters)) {
+    throw new PluginError(pluginName, 'The reporters only supports array')
+  }
+
+  const reportersFunction = reporterFactory(reporters)
 
   const failAfterError = options.failAfterError === undefined ? true : options.failAfterError
 
@@ -54,11 +61,9 @@ module.exports = function gulpMarkdownlint (options = {}) {
       if (err) {
         this.emit('error', new PluginError(pluginName, err))
       } else {
+        reportersFunction(ret)
+
         const allMessage = ret.toString(true)
-
-        const message = formatResult(ret, formatter)
-        console.info(message)
-
         if (failAfterError && allMessage) {
           this.emit('error', new PluginError(pluginName, allMessage))
         }
@@ -68,59 +73,4 @@ module.exports = function gulpMarkdownlint (options = {}) {
   }
 
   return through2.obj(onFile, onStreamEnd).resume()
-}
-
-// 过滤掉没有错误的结果
-function filterResult (result) {
-  const obj = {}
-  const files = Object.keys(result)
-  for (const file of files) {
-    const arr = result[file]
-    if (!arr || arr.length === 0) {
-      continue
-    }
-    obj[file] = arr
-  }
-  return obj
-}
-
-function formatResult (result, formatter) {
-  result = filterResult(result)
-
-  if (formatter === 'json') {
-    return JSON.stringify(result)
-  }
-  if (formatter === 'verbose') {
-    const files = Object.keys(result)
-    const messageArr = []
-    for (const file of files) {
-      const arr = result[file]
-      const tempArr = []
-      for (const item of arr) {
-        const lineNumber = item['lineNumber']
-        const ruleNames = item['ruleNames']
-        const ruleDescription = item['ruleDescription']
-        const ruleInformation = item['ruleInformation']
-        const errorContext = item['errorContext']
-        const errorDetail = item['errorDetail']
-        const errorRange = item['errorRange']
-
-        let message = `\n\tline ${lineNumber}`
-        if (errorRange) {
-          message += `,start ${errorRange[0]},end ${errorRange[1]})`
-        }
-        message += `: ${errorContext}`
-        message += `\n\t${ruleNames[0]}: ${ruleDescription} (${ruleInformation})`
-        if (errorDetail) {
-          message += `\n\tmessage: ${errorDetail}`
-        }
-
-        tempArr.push(message)
-      }
-      messageArr.push(`${file}:${tempArr.join('\n')}`)
-    }
-
-    return messageArr.join('\n\n')
-  }
-  return ''
 }

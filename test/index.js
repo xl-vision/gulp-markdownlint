@@ -7,90 +7,39 @@ const resolve = glob => path.join(__dirname, 'files', glob)
 describe('test index', () => {
   it('check error message', () => {
     expect.assertions(1)
-    return new Promise((resolve) => {
+    // eslint-disable-next-line promise/param-names
+    return new Promise((resolved) => {
       gulp.src(resolve('base.md'))
         .pipe(gulpMarkdownlint({
           configFile: resolve('markdownlint.json')
         }))
         .on('error', err => {
           expect(err.message.replace(/.*base.md/g, '')).toMatchSnapshot()
-          resolve()
-        })
-    })
-  })
-
-  it('check console message with formater: verbose', () => {
-    expect.assertions(1)
-    jest.spyOn(console, 'info')
-      .mockImplementation(message => {
-        expect(message.replace(/^.*\n/, '')).toMatchSnapshot()
-      })
-
-    // eslint-disable-next-line promise/param-names
-    return new Promise((resolved) => {
-      gulp.src(resolve('base.md'))
-        .pipe(gulpMarkdownlint({
-          configFile: resolve('markdownlint.json'),
-          formatter: 'verbose'
-        }))
-        .on('error', () => resolved())
-    })
-  })
-
-  it('check console message with formater: json', () => {
-    expect.assertions(1)
-    jest.spyOn(console, 'info')
-      .mockImplementation(message => {
-        expect(message.replace(/".*base.md/g, '')).toMatchSnapshot()
-      })
-
-    // eslint-disable-next-line promise/param-names
-    return new Promise((resolved) => {
-      gulp.src(resolve('base.md'))
-        .pipe(gulpMarkdownlint({
-          configFile: resolve('markdownlint.json'),
-          formatter: 'json'
-        }))
-        .on('error', () => resolved())
-    })
-  })
-
-  it('check console message with formater: none', () => {
-    expect.assertions(1)
-    jest.spyOn(console, 'info')
-      .mockImplementation(message => {
-        expect(message).toBe('')
-      })
-
-    // eslint-disable-next-line promise/param-names
-    return new Promise((resolved) => {
-      gulp.src(resolve('base.md'))
-        .pipe(gulpMarkdownlint({
-          configFile: resolve('markdownlint.json'),
-          formatter: 'none'
-        }))
-        .on('error', () => {
           resolved()
         })
     })
   })
 
-  // it('check error with failAfterError: true', () => {
+  // it('check console message with reporters', () => {
   //   expect.assertions(1)
+  //   jest.spyOn(console, 'info')
+  //     .mockImplementation(message => {
+  //       expect(message.replace(/^.*\n/, '')).toMatchSnapshot()
+  //     })
+
+  //   // eslint-disable-next-line promise/param-names
   //   return new Promise((resolved) => {
   //     gulp.src(resolve('base.md'))
   //       .pipe(gulpMarkdownlint({
   //         configFile: resolve('markdownlint.json'),
-  //         failAfterError: true
+  //         reporters: [{
+  //           formatter: 'verbose',
+  //           console: true,
+  //           save: 'test/files/log.txt'
+  //         }]
   //       }))
-  //       .on('error', err => {
-  //         console.log(err)
-  //         expect(err.message.replace(/.*base.md/g, '')).toMatchSnapshot()
-  //         resolved()
-  //       })
-
+  //       .on('error', () => resolved())
   //   })
-
   // })
 
   it('check error with failAfterError: false', () => {
@@ -103,20 +52,15 @@ describe('test index', () => {
           failAfterError: false
         }))
         .on('error', err => {
+          console.log(err)
           expect(err.message.replace(/.*base.md/g, '')).toMatchSnapshot()
-          resolved()
         })
-        .on('end', resolved)
+        .on('finish', resolved)
     })
   })
 
   it('provide config object instead of config file', () => {
     expect.assertions(1)
-    jest.spyOn(console, 'info')
-      .mockImplementation(message => {
-        expect(message.replace(/^.*\n/, '')).toMatchSnapshot()
-      })
-
     // eslint-disable-next-line promise/param-names
     return new Promise((resolved) => {
       gulp.src(resolve('base.md'))
@@ -124,10 +68,13 @@ describe('test index', () => {
           configFile: false,
           config: {
             MD022: { lines_above: 0, lines_below: 0 }
-          },
-          allowWarnings: true
+          }
         }))
-        .on('error', () => resolved())
+        .on('error', err => {
+          console.log(err)
+          expect(err.message.replace(/.*base.md/g, '')).toMatchSnapshot()
+          resolved()
+        })
     })
   })
 })

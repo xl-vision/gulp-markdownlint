@@ -1,0 +1,7 @@
+C:\Users\xrs44\Desktop\gulp-markdownlint\test\files\base.md:
+	line 1: # 123
+	MD022: Headings should be surrounded by blank lines (https://github.com/DavidAnson/markdownlint/blob/v0.13.0/doc/Rules.md#md022)
+	message: Expected: 1; Actual: 0; Below
+
+	line 2: * 123 *
+	MD032: Lists should be surrounded by blank lines (https://github.com/DavidAnson/markdownlint/blob/v0.13.0/doc/Rules.md#md032)
