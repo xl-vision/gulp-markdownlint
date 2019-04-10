@@ -69,7 +69,7 @@ function reporterFactory (reporters) {
         return
       }
       if (reporter.console) {
-        console.info(msg)
+        console.error(msg)
       }
       if (reporter.save) {
         let filePath = reporter.save
