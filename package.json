@@ -38,10 +38,10 @@
     "eslint-plugin-standard": "^4.0.0",
     "gulp": "^4.0.0",
     "jest": "^24.7.1",
-    "markdownlint": "^0.13.0"
+    "markdownlint": "^0.25.1"
   },
   "peerDependencies": {
-    "markdownlint": "^0.13.0"
+    "markdownlint": "^0.25.1"
   },
   "dependencies": {
     "plugin-error": "^1.0.1",
